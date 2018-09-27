@@ -1,8 +1,4 @@
-# NON LIMIT CHAT. AND SPEED FASH
-
-MAAF SOBAT FILE PYTHON DAN LAIN LAINYA TIDAK DI CANTUMKAN.
-KARNA FILE SYSTEM BERBAYAR SILAHKAN GANTI IMPORT NYA AJA PADA
-SCRIPT BOT KALIAN DENGAN COPY PASTEKAN DI BAWAH INI.
+# NON LIMIT CHAT. AND SPEED FAST
 
 - CONFIGURATION IMPORT FILE
 ```
@@ -22,6 +18,6 @@ from googletrans import Translator
 
 - LINE UPDATE
 juni 2018
-## [SUBCRABE NOW](https://www.youtube.com/channel/UCycBrqSWEHdk-slnhUmGWiQ)
+## [SUBCRABE NOW](https://www.youtube.com/dhenza15)
 KLIK
-## [CREATOR](http://line.me/ti/p/~adiputra.95)
+## [CREATOR](http://line.me/ti/p/~teambotprotect)
