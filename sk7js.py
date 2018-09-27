@@ -11,43 +11,44 @@ import time, random, sys, json, codecs, threading, glob, re, string, os, request
 from gtts import gTTS
 from googletrans import Translator
 
-cl = LineClient(authToken='')
+cl = LINE("")
 cl.log("Auth Token : " + str(cl.authToken))
 channel = LineChannel(cl)
 cl.log("Channel Access Token : " + str(channel.channelAccessToken))
 
-ki = LineClient(authToken='')
+ki = LINE("")
 ki.log("Auth Token : " + str(ki.authToken))
 channel1 = LineChannel(ki)
 ki.log("Channel Access Token : " + str(channel1.channelAccessToken))
 
-kk = LineClient(authToken='')
+kk = LINE("")
 kk.log("Auth Token : " + str(kk.authToken))
 channel2 = LineChannel(kk)
 kk.log("Channel Access Token : " + str(channel2.channelAccessToken))
 
-kc = LineClient(authToken='')
+kc = LINE("")
 kc.log("Auth Token : " + str(kc.authToken))
 channel3 = LineChannel(kc)
 kc.log("Channel Access Token : " + str(channel3.channelAccessToken))
 
-km = LineClient(authToken='')
+km = LINE(authToken='')
 km.log("Auth Token : " + str(km.authToken))
 channel4 = LineChannel(km)
 km.log("Channel Access Token : " + str(channel4.channelAccessToken))
 
-kb = LineClient(authToken='')
+kb = LINE("")
 kb.log("Auth Token : " + str(kb.authToken))
 channel5 = LineChannel(kb)
 kb.log("Channel Access Token : " + str(channel5.channelAccessToken))
 
-sw = LineClient(authToken='')
+sw = LINE("")
 sw.log("Auth Token : " + str(sw.authToken))
 channel6 = LineChannel(sw)
 sw.log("Channel Access Token : " + str(channel6.channelAccessToken))
 
 poll = LinePoll(cl)
-call = LineCall(cl)
+call = cl
+
 creator = ["ub1c5a71f27b863896e9d44bea857d35b"]
 owner = ["ub1c5a71f27b863896e9d44bea857d35b"]
 admin = ["ub1c5a71f27b863896e9d44bea857d35b"]
