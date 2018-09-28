@@ -11,48 +11,35 @@ import time, random, sys, json, codecs, threading, glob, re, string, os, request
 from gtts import gTTS
 from googletrans import Translator
 
-cl = LINE("")
+
+cl = LINE("ExMlvIKGA3vA2tIy9du2.UgaA6PtgDwrhl20KYKxh8G.9y+Us9qN94gHNZs6yLBOEmURKhkgLIno3MHWjUVMoss=")
 cl.log("Auth Token : " + str(cl.authToken))
-channel = LineChannel(cl)
-cl.log("Channel Access Token : " + str(channel.channelAccessToken))
 
-ki = LINE("")
+ki = LINE("Ex9RLWo3orqtDI0gaTX3.nsM86g66WhxwizzU8wsg8W.8e7jS/U7WrHLGg7e4Z5Lj85uyLS52dkNW9XE/jRwcEU=")
 ki.log("Auth Token : " + str(ki.authToken))
-channel1 = LineChannel(ki)
-ki.log("Channel Access Token : " + str(channel1.channelAccessToken))
 
-kk = LINE("")
+kk = LINE("ExcFW23X4rPuEOAQaLWc.gYj8eX14kEAzvSbV9TTxla.0FdbAKvbwdyG7JHJQ7UJSpJ1ltsa7JbadqiTH5QF3E8=")
 kk.log("Auth Token : " + str(kk.authToken))
-channel2 = LineChannel(kk)
-kk.log("Channel Access Token : " + str(channel2.channelAccessToken))
 
-kc = LINE("")
+kc = LINE("ExaVneBmeMUaZgTUkhvd.jB/U5D2EIoY5xGkQ7FOTtq.cbKGwKstZ+UBhm8cWbDQNmj0dB0DiHA9KUZo5TZhqMw=")
 kc.log("Auth Token : " + str(kc.authToken))
-channel3 = LineChannel(kc)
-kc.log("Channel Access Token : " + str(channel3.channelAccessToken))
 
-km = LINE(authToken='')
+km = LINE("ExYe5QPVuzctthPH5EQ7.BiGakU1CeeRwXmH42j19bW.F4VGqi3N2YPAUQMeKAiX6crxrHdoNste9A30Rw2Qtsk=")
 km.log("Auth Token : " + str(km.authToken))
-channel4 = LineChannel(km)
-km.log("Channel Access Token : " + str(channel4.channelAccessToken))
 
-kb = LINE("")
+kb = LINE("ExNOirrRs8fhnaSTGd7e.BShFDWBIn7Ntkx6hjDkkdG.BGxktGb3A1sZREXuqP+Mxw3X2wbWdnw+bvce0lvouAA=")
 kb.log("Auth Token : " + str(kb.authToken))
-channel5 = LineChannel(kb)
-kb.log("Channel Access Token : " + str(channel5.channelAccessToken))
 
-sw = LINE("")
+sw = LINE("ExKUPuLV9GqtWou0HAn7.dgzib3ot1/itWEJn4nwevW.2Ldupnmk6KuWJ8w4N1cTk9wBduHVwXF7iVEznAmWeTE=")
 sw.log("Auth Token : " + str(sw.authToken))
-channel6 = LineChannel(sw)
-sw.log("Channel Access Token : " + str(channel6.channelAccessToken))
 
-poll = LinePoll(cl)
+oepoll = OEPoll(cl)
 call = cl
 
 creator = ["ub1c5a71f27b863896e9d44bea857d35b"]
-owner = ["ub1c5a71f27b863896e9d44bea857d35b"]
-admin = ["ub1c5a71f27b863896e9d44bea857d35b"]
-staff = ["ub1c5a71f27b863896e9d44bea857d35b"]
+owner = ["ub1c5a71f27b863896e9d44bea857d35b","ub8601aea94c67564472f6d24ca45c7f2"]
+admin = ["ub1c5a71f27b863896e9d44bea857d35b","ub8601aea94c67564472f6d24ca45c7f2"]
+staff = ["ub1c5a71f27b863896e9d44bea857d35b","ub8601aea94c67564472f6d24ca45c7f2"]
 lineProfile = cl.getProfile()
 mid = cl.getProfile().mid
 Amid = ki.getProfile().mid
@@ -64,7 +51,7 @@ Zmid = sw.getProfile().mid
 KAC = [cl,ki,kk,kc]
 ABC = [ki,kk,kc,km,kb]
 Bots = [mid,Amid,Bmid,Cmid,Dmid,Emid,Zmid]
-SILENTBOT = admin + staff
+Saints = admin + staff
 
 protectqr = []
 protectkick = []
@@ -4977,7 +4964,7 @@ def bot(op):
 
 while True:
     try:
-        ops = poll.singleTrace(count=50)
+        ops = oepoll.singleTrace(count=50)
         if ops is not None:
             for op in ops:
                # bot(op)
