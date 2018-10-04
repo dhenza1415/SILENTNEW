@@ -11,13 +11,14 @@ class Auth(object):
     authToken   = ""
     certificate = ""
 
-    def __init__(self):
-        self.server = Server()
+    def __init__(self, appType=None):
+        self.server = Server(appType)
         self.callback = Callback(self.__defaultCallback)
         self.server.setHeadersWithDict({
             'User-Agent': self.server.USER_AGENT,
             'X-Line-Application': self.server.APP_NAME,
-            'X-Line-Carrier': self.server.CARRIER
+            'X-Line-Carrier': self.server.CARRIER,
+            'x-lal': "in_ID"
         })
 
     def __loadSession(self):
@@ -26,6 +27,7 @@ class Auth(object):
         self.call       = Session(self.server.LINE_HOST_DOMAIN, self.server.Headers, self.server.LINE_CALL_QUERY_PATH).Call()
         self.channel    = Session(self.server.LINE_HOST_DOMAIN, self.server.Headers, self.server.LINE_CHAN_QUERY_PATH).Channel()
         self.square     = Session(self.server.LINE_HOST_DOMAIN, self.server.Headers, self.server.LINE_SQUARE_QUERY_PATH).Square()
+        self.shop       = Session(self.server.LINE_HOST_DOMAIN, self.server.Headers, self.server.LINE_SHOP_QUERY_PATH).Shop()
         
         self.revision = self.poll.getLastOpRevision()
         self.isLogin = True

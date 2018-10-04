@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from akad.ttypes import Message
+from akad.ttypes import Message, Location
 from random import randint
 
 import json, ntpath
@@ -35,13 +35,17 @@ class Talk(object):
         return self.talk.getSettings()
 
     @loggedIn
-    def sendMessage1(self, messageObject):
-        return self.talk.sendMessage(0,messageObject)
-
-
-    @loggedIn
     def getUserTicket(self):
         return self.talk.getUserTicket()
+
+    @loggedIn
+    def generateUserTicket(self):
+        try:
+            ticket = self.getUserTicket().id
+        except:
+            self.reissueUserTicket()
+            ticket = self.getUserTicket().id
+        return ticket
 
     @loggedIn
     def updateProfile(self, profileObject):
@@ -55,15 +59,39 @@ class Talk(object):
     def updateProfileAttribute(self, attrId, value):
         return self.talk.updateProfileAttribute(0, attrId, value)
 
+    @loggedIn
+    def updateContactSetting(self, mid, flag, value):
+        return self.talk.updateContactSetting(0, mid, flag, value)
+
+    @loggedIn
+    def deleteContact(self, mid):
+        return self.updateContactSetting(mid, 16, 'True')
+
+    @loggedIn
+    def renameContact(self, mid, name):
+        return self.updateContactSetting(mid, 2, name)
+
+    @loggedIn
+    def addToFavoriteContactMids(self, mid):
+        return self.updateContactSetting(mid, 8, 'True')
+
+    @loggedIn
+    def addToHiddenContactMids(self, mid):
+        return self.updateContactSetting(mid, 4, 'True')
+
     """Operation"""
 
     @loggedIn
-    def fetchOperation(self, revision, count):
-        return self.talk.fetchOperations(revision, count)
+    def fetchOps(self, localRev, count, globalRev=0, individualRev=0):
+        return self.poll.fetchOps(self, localRev, count, globalRev, individualRev)
+
+    @loggedIn
+    def fetchOperation(self, revision, count=1):
+        return self.poll.fetchOperations(revision, count)
 
     @loggedIn
     def getLastOpRevision(self):
-        return self.talk.getLastOpRevision()
+        return self.poll.getLastOpRevision()
 
     """Message"""
 
@@ -77,7 +105,114 @@ class Talk(object):
             self._messageReq[to] = -1
         self._messageReq[to] += 1
         return self.talk.sendMessage(self._messageReq[to], msg)
-    
+
+    @loggedIn
+    def sendMessageObject(self, msg):
+        to = msg.to
+        if to not in self._messageReq:
+            self._messageReq[to] = -1
+        self._messageReq[to] += 1
+        self._msgReq += 1
+        return self.talk.sendMessage(self._messageReq[to], msg)
+
+    @loggedIn
+    def sendLocation(self, to, address, latitude, longitude, phone=None, contentMetadata={}):
+        msg = Message()
+        msg.to, msg._from = to, self.profile.mid
+        msg.text = "Location by Hello World"
+        msg.contentType, msg.contentMetadata = 0, contentMetadata
+        location = Location()
+        location.address = address
+        location.phone = phone
+        location.latitude = float(latitude)
+        location.longitude = float(longitude)
+        location.title = "Location"
+        msg.location = location
+        if to not in self._messageReq:
+            self._messageReq[to] = -1
+        self._messageReq[to] += 1
+        return self.talk.sendMessage(self._messageReq[to], msg)
+
+    @loggedIn
+    def sendMessageMusic(self, to, title=None, subText=None, url=None, iconurl=None, contentMetadata={}):
+        """
+        a : Android
+        i : Ios
+        """
+        self.profile = self.getProfile()
+        self.userTicket = self.generateUserTicket()
+        title = title if title else 'LINE MUSIC'
+        subText = subText if subText else self.profile.displayName
+        url = url if url else 'line://ti/p/' + self.userTicket
+        iconurl = iconurl if iconurl else 'https://obs.line-apps.com/os/p/%s' % self.profile.mid
+        msg = Message()
+        msg.to, msg._from = to, self.profile.mid
+        msg.text = title
+        msg.contentType = 19
+        msg.contentMetadata = {
+            'text': title,
+            'subText': subText,
+            'a-installUrl': url,
+            'i-installUrl': url,
+            'a-linkUri': url,
+            'i-linkUri': url,
+            'linkUri': url,
+            'previewUrl': iconurl,
+            'type': 'mt',
+            'a-packageName': 'com.spotify.music',
+            'countryCode': 'JP',
+            'id': 'mt000000000a6b79f9'
+        }
+        if contentMetadata:
+            msg.contentMetadata.update(contentMetadata)
+        if to not in self._messageReq:
+            self._messageReq[to] = -1
+        self._messageReq[to] += 1
+        return self.talk.sendMessage(self._messageReq[to], msg)
+
+    @loggedIn
+    def generateMessageFooter(self, title=None, link=None, iconlink=None):
+        self.profile = self.getProfile()
+        self.userTicket = self.generateUserTicket()
+        title = title if title else self.profile.displayName
+        link = link if link else 'line://ti/p/' + self.userTicket
+        iconlink = iconlink if iconlink else 'https://obs.line-apps.com/os/p/%s' % self.profile.mid
+        return {'AGENT_NAME': title, 'AGENT_LINK': link, 'AGENT_ICON': iconlink}
+
+    @loggedIn
+    def sendMessageWithFooter(self, to, text, title=None, link=None, iconlink=None, contentMetadata={}):
+        msg = Message()
+        msg.to, msg._from = to, self.profile.mid
+        msg.text = text
+        msg.contentType = 0
+        msg.contentMetadata = self.generateMessageFooter(title, link, iconlink)
+        if contentMetadata:
+            msg.contentMetadata.update(contentMetadata)
+        if to not in self._messageReq:
+            self._messageReq[to] = -1
+        self._messageReq[to] += 1
+        return self.talk.sendMessage(self._messageReq[to], msg)
+
+    @loggedIn
+    def generateReplyMessage(self, relatedMessageId):
+        msg = Message()
+        msg.relatedMessageServiceCode = 1
+        msg.messageRelationType = 3
+        msg.relatedMessageId = str(relatedMessageId)
+        return msg
+
+    @loggedIn
+    def sendReplyMessage(self, relatedMessageId, to, text, contentMetadata={}, contentType=0):
+        msg = self.generateReplyMessage(relatedMessageId)
+        msg.to = to
+        msg.text = text
+        msg.contentType = contentType
+        msg.contentMetadata = contentMetadata
+        if to not in self._messageReq:
+            self._messageReq[to] = -1
+        self._messageReq[to] += 1
+        return self.talk.sendMessage(self._messageReq[to], msg)
+
     """ Usage:
         @to Integer
         @text String
@@ -243,7 +378,7 @@ class Talk(object):
             file_name = ntpath.basename(path)
         file_size = len(open(path, 'rb').read())
         objectId = self.sendMessage(to=to, text=None, contentMetadata={'FILE_NAME': str(file_name),'FILE_SIZE': str(file_size)}, contentType = 14).id
-        return self.uploadObjTalk(path=path, type='file', returnAs='bool', objId=objectId)
+        return self.uploadObjTalk(path=path, type='file', returnAs='bool', objId=objectId, name=file_name)
 
     @loggedIn
     def sendFileWithURL(self, to, url, fileName=''):
@@ -325,15 +460,16 @@ class Talk(object):
         return self.talk.reissueUserTicket(expirationTime, maxUseCount)
     
     @loggedIn
-    def cloneContactProfile(self, mid):
+    def cloneContactProfile(self, mid, channel):
         contact = self.getContact(mid)
+        path = "http://dl.profile.line-cdn.net/" + contact.pictureStatus
+        path = self.downloadFileURL(path)
+        self.updateProfilePicture(path)
         profile = self.profile
         profile.displayName = contact.displayName
         profile.statusMessage = contact.statusMessage
-        profile.pictureStatus = contact.pictureStatus
-        if self.getProfileCoverId(mid) is not None:
-            self.updateProfileCoverById(self.getProfileCoverId(mid))
-        self.updateProfileAttribute(8, profile.pictureStatus)
+        if channel.getProfileCoverId(mid) is not None:
+            channel.updateProfileCoverById(channel.getProfileCoverId(mid))
         return self.updateProfile(profile)
 
     """Group"""

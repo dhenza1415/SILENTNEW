@@ -15,7 +15,9 @@ def loggedIn(func):
 class Timeline(Channel):
 
     def __init__(self):
-        Channel.__init__(self, self.channel, self.server.CHANNEL_ID['LINE_TIMELINE'], False)
+        if not self.channelId:
+            self.channelId = self.server.CHANNEL_ID['LINE_TIMELINE']
+        Channel.__init__(self, self.channel, self.channelId, False)
         self.tl = self.getChannelResult()
         self.__loginTimeline()
         
@@ -35,7 +37,7 @@ class Timeline(Channel):
     @loggedIn
     def getFeed(self, postLimit=10, commentLimit=1, likeLimit=1, order='TIME'):
         params = {'postLimit': postLimit, 'commentLimit': commentLimit, 'likeLimit': likeLimit, 'order': order}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v27/feed/list.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/feed/list.json', params)
         r = self.server.getContent(url, headers=self.server.timelineHeaders)
         return r.json()
 
@@ -44,7 +46,7 @@ class Timeline(Channel):
         if mid is None:
             mid = self.profile.mid
         params = {'homeId': mid, 'postLimit': postLimit, 'commentLimit': commentLimit, 'likeLimit': likeLimit, 'sourceType': 'LINE_PROFILE_COVER'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v27/post/list.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/post/list.json', params)
         r = self.server.getContent(url, headers=self.server.timelineHeaders)
         return r.json()
 
@@ -83,8 +85,8 @@ class Timeline(Channel):
 
     @loggedIn
     def createPost(self, text, holdingTime=None):
-        params = {'homeId': mid, 'sourceType': 'TIMELINE'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v33/post/create.json', params)
+        params = {'homeId': self.profile.mid, 'sourceType': 'TIMELINE'}
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/post/create.json', params)
         payload = {'postInfo': {'readPermission': {'type': 'ALL'}}, 'sourceType': 'TIMELINE', 'contents': {'text': text}}
         if holdingTime != None:
             payload["postInfo"]["holdingTime"] = holdingTime
@@ -97,8 +99,8 @@ class Timeline(Channel):
         if mid is None:
             mid = self.profile.mid
         params = {'receiveMid': mid, 'postId': postId}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v33/post/sendPostToTalk.json', params)
-        r = self.server.getContent(url, data=data, headers=self.server.timelineHeaders)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/post/sendPostToTalk.json', params)
+        r = self.server.getContent(url, headers=self.server.timelineHeaders)
         return r.json()
 
     @loggedIn
@@ -106,7 +108,7 @@ class Timeline(Channel):
         if mid is None:
             mid = self.profile.mid
         params = {'homeId': mid, 'sourceType': 'TIMELINE'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v33/comment/create.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/comment/create.json', params)
         data = {'commentText': text, 'activityExternalId': postId, 'actorId': mid}
         r = self.server.postContent(url, data=data, headers=self.server.timelineHeaders)
         return r.json()
@@ -116,7 +118,7 @@ class Timeline(Channel):
         if mid is None:
             mid = self.profile.mid
         params = {'homeId': mid, 'sourceType': 'TIMELINE'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v33/comment/delete.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/comment/delete.json', params)
         data = {'commentId': commentId, 'activityExternalId': postId, 'actorId': mid}
         r = self.server.postContent(url, data=data, headers=self.server.timelineHeaders)
         return r.json()
@@ -128,7 +130,7 @@ class Timeline(Channel):
         if likeType not in [1001,1002,1003,1004,1005,1006]:
             raise Exception('Invalid parameter likeType')
         params = {'homeId': mid, 'sourceType': 'TIMELINE'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v33/like/create.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/like/create.json', params)
         data = {'likeType': likeType, 'activityExternalId': postId, 'actorId': mid}
         r = self.server.postContent(url, data=data, headers=self.server.timelineHeaders)
         return r.json()
@@ -138,7 +140,7 @@ class Timeline(Channel):
         if mid is None:
             mid = self.profile.mid
         params = {'homeId': mid, 'sourceType': 'TIMELINE'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v33/like/cancel.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/like/cancel.json', params)
         data = {'activityExternalId': postId, 'actorId': mid}
         r = self.server.postContent(url, data=data, headers=self.server.timelineHeaders)
         return r.json()
@@ -149,7 +151,7 @@ class Timeline(Channel):
     def createGroupPost(self, mid, text):
         payload = {'postInfo': {'readPermission': {'homeId': mid}}, 'sourceType': 'TIMELINE', 'contents': {'text': text}}
         data = json.dumps(payload)
-        r = self.server.postContent(self.server.LINE_TIMELINE_API + '/v27/post/create.json', data=data, headers=self.server.timelineHeaders)
+        r = self.server.postContent(self.server.LINE_TIMELINE_API + '/v39/post/create.json', data=data, headers=self.server.timelineHeaders)
         return r.json()
 
     @loggedIn
@@ -174,7 +176,7 @@ class Timeline(Channel):
     @loggedIn
     def getGroupPost(self, mid, postLimit=10, commentLimit=1, likeLimit=1):
         params = {'homeId': mid, 'commentLimit': commentLimit, 'likeLimit': likeLimit, 'sourceType': 'TALKROOM'}
-        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v27/post/list.json', params)
+        url = self.server.urlEncode(self.server.LINE_TIMELINE_API, '/v39/post/list.json', params)
         r = self.server.getContent(url, headers=self.server.timelineHeaders)
         return r.json()
 
