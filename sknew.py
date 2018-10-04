@@ -12,22 +12,22 @@ from gtts import gTTS
 from googletrans import Translator
 
 #===============================================================================================
-cl = LINE("")
+cl = LINE("ExUzTHIxrgdt6uBiKam2.UgaA6PtgDwrhl20KYKxh8G.1hddbU37YoyJWcz1HfWbHVoMs+NOvufviT6G+Ajmeyg=")
 cl.log("Auth Token : " + str(cl.authToken))
 
-ki = LINE("")
+ki = LINE("Exb163FvjZcFMAAUhQA3.nsM86g66WhxwizzU8wsg8W.ciM235fWr+FtJVTkEFwzf5QKBSqowZ0M4jEIfOBouaQ=")
 ki.log("Auth Token : " + str(ki.authToken))
 
-kk = LINE("")
+kk = LINE("ExRR8OTCxPZJ35HzxcCd.jB/U5D2EIoY5xGkQ7FOTtq.O2oSdlbqvFysyktX4yRZ1uWp5X2g0+6M1zx39BEDf6g=")
 kk.log("Auth Token : " + str(kk.authToken))
 
-kc = LINE("")
+kc = LINE("ExRR8OTCxPZJ35HzxcCd.jB/U5D2EIoY5xGkQ7FOTtq.O2oSdlbqvFysyktX4yRZ1uWp5X2g0+6M1zx39BEDf6g=")
 kc.log("Auth Token : " + str(kc.authToken))
 
-kb = LINE("")
+kb = LINE("ExurTDyyEMCDYqYBpF37.BiGakU1CeeRwXmH42j19bW.PxvpemsiOXyHMmBvp2m0hEfLwqTvApYapD9ADIdZjAw=")
 kb.log("Auth Token : " + str(kb.authToken))
 
-sw = LINE("")
+sw = LINE("ExBnBPQdS9rc3WwnRtE1.Fu4JLf5bTsDevBLF+yRX8q.yFTNCA53HW1icVWkjU12rXe3axCzuEeIFHh7Zo8AMcU=")
 sw.log("Auth Token : " + str(sw.authToken))
 
 #===============================================================================================
@@ -4597,7 +4597,7 @@ def bot(op):
 
 while True:
     try:
-        ops = poll.singleTrace(count=50)
+        ops = oepoll.singleTrace(count=50)
         if ops is not None:
             for op in ops:
                # bot(op)
