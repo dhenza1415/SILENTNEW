@@ -1,6 +1,6 @@
-# NON LIMIT CHAT. AND SPEED FAST
+# SILAHKAN GUNAKAN LIBS NYA AJA KLO MAU SCNYA SESUIN AJA
 
-- CONFIGURATION IMPORT FILE
+- Conto di sc gunakan IMPORT FILE coto di bawah
 ```
 from linepy import *
 from akad.ttypes import *
